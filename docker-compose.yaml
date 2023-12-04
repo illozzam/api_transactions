@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    volumes:
+      - /var/lib/mysql:/app/db_data
+    networks:
+      - objective_network
+    env_file:
+      - .env
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    networks:
+      - objective_network
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+
+networks:
+  objective_network:
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
+      
